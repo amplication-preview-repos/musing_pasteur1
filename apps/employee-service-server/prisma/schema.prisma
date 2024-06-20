@@ -1,0 +1,66 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  createdAt DateTime @default(now())
+  email     String?  @unique
+  firstName String?
+  id        String   @id @default(cuid())
+  lastName  String?
+  password  String
+  roles     Json
+  updatedAt DateTime @updatedAt
+  username  String   @unique
+}
+
+model Department {
+  createdAt   DateTime   @default(now())
+  description String?
+  employees   Employee[]
+  id          String     @id @default(cuid())
+  name        String?
+  updatedAt   DateTime   @updatedAt
+}
+
+model Employee {
+  createdAt    DateTime    @default(now())
+  department   Department? @relation(fields: [departmentId], references: [id])
+  departmentId String?
+  email        String?
+  firstName    String?
+  hireDate     DateTime?
+  id           String      @id @default(cuid())
+  lastName     String?
+  phoneNumber  String?
+  projects     Project[]
+  role         Role?       @relation(fields: [roleId], references: [id])
+  roleId       String?
+  salary       Float?
+  updatedAt    DateTime    @updatedAt
+}
+
+model Project {
+  createdAt  DateTime  @default(now())
+  employee   Employee? @relation(fields: [employeeId], references: [id])
+  employeeId String?
+  endDate    DateTime?
+  id         String    @id @default(cuid())
+  name       String?
+  startDate  DateTime?
+  updatedAt  DateTime  @updatedAt
+}
+
+model Role {
+  createdAt   DateTime   @default(now())
+  description String?
+  employees   Employee[]
+  id          String     @id @default(cuid())
+  title       String?
+  updatedAt   DateTime   @updatedAt
+}
